@@ -10,15 +10,45 @@
 
 // largest number possible:
 // 0xffffffff = 4294967295
+
+// instruction format
+using in_t = unsigned int;
 const unsigned int kInputLimit = 0xffffffff;
 
-unsigned int CountDigits(unsigned int h);
 
-void Decode(unsigned int hex, unsigned int& opcode, unsigned int& operand);
+class Disassembler {
+public:
 
-std::string MapOpCodeToInstruction(const unsigned int input);
+	Disassembler() : 
+		_hex_input(0), _opcode(0), _operand(0), _n_digits(0) {}
 
-bool CheckInput(const unsigned int input);
+	void Decode(in_t hex);
 
+	// fixme: i would prefere this to be private!
+	// but then I would have to blackbox test...
+	
+	std::string GetInstruction() const;
+	// bool CheckInput(const unsigned int input);
+
+	inline in_t GetOpcode() const { return _opcode; }
+	inline in_t GetOperand() const { return _operand; }
+
+	void print() const{
+		std::cout << std::hex;
+		std::cout << "_hex_input " << _hex_input << std::endl;
+		std::cout << "_opcode " << _opcode << std::endl;
+		std::cout << "_operand " << _operand << std::endl;
+		std::cout << std::dec << "_n_digits " << _n_digits << std::endl;
+	}
+
+private:
+
+	unsigned int CountDigits();
+
+	in_t _hex_input;
+	in_t _opcode;
+	in_t _operand;
+	unsigned int _n_digits;
+};
 
 #endif /* DISASSEMBLY_LIB */

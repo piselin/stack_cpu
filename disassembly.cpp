@@ -23,52 +23,60 @@ disassemble
 */
 
 
-unsigned int CountDigits(unsigned int h) {
-	unsigned int n_digits = 0;
+unsigned int Disassembler::CountDigits() {
+
+	//unsigned int _n_digits = 0;
+	unsigned int n = 0;
+	in_t h = _hex_input; // working copy
 	for(unsigned int i = 0; (i < 8) && (h > 0); i++){
-		n_digits++;
+		//_n_digits++;
+		n++;
 		h/=16;
 	}
-	return n_digits;
+	//std::cout << "after calc : " << std::dec << _n_digits << std::endl;
+	return n;
 }
 
-void Decode(unsigned int hex, unsigned int& opcode, unsigned int& operand) {
+void Disassembler::Decode(in_t input) {
+	_hex_input = input; // keep the original input
 
-	const unsigned int n_digits = CountDigits(hex);
+	in_t hex = _hex_input; // working copy
 
-	opcode = 0x1; // default
-	operand = 0x0;
+	_n_digits = CountDigits();
+	_operand = 0x0;
+	_opcode = 0x1; // halt
 
-	if (n_digits == 0) {
-		// nothing
-	} else if(n_digits == 1) {
+	if (_n_digits == 0) {
+		
+	} else if(_n_digits == 1) {
 		if(hex == 0x1) {
-			opcode = hex;
+			_opcode = hex;
 		} else {
 			assert(false); // some crap happened!
 		}
-	} else if(n_digits == 2) {
-		opcode = hex;
+	} else if(_n_digits == 2) {
+		_opcode = hex;
 	} else {
-		for(unsigned int i = 0; i < n_digits-2; i++) {
+		_operand = 0;
+		for(unsigned int i = 0; i < _n_digits-2; i++) {
 			unsigned int digit = hex%16;
-			operand += digit*std::pow(16,i);
+			_operand += digit*std::pow(16,i);
 			hex/=16;
 		}
-		opcode = hex;
+		_opcode = hex;
 	}
 }
 
-bool CheckInput(const unsigned int input) {
-	std::cout << "in " << input << std::endl;
-	std::cout << input / kInputLimit << std::endl;
-	return (input / kInputLimit <= 1);
-}
+// bool Disassembler::CheckInput(const unsigned int input) {
+// 	std::cout << "in " << input << std::endl;
+// 	std::cout << input / kInputLimit << std::endl;
+// 	return (input / kInputLimit <= 1);
+// }
 
-std::string MapOpCodeToInstruction(const unsigned int input) {
+std::string Disassembler::GetInstruction() const {
 	std::string op;
-	
-	switch(input) {
+
+	switch(_opcode) {
 		case 0x1: 	op = "hlt"; 	break;
 		case 0x10:	op = "in"; 		break;
 		case 0x11: 	op = "inchar"; 	break;

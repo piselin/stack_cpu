@@ -4,57 +4,52 @@
 
 class DisassemblyTest : public ::testing::Test {
 protected:
-	DisassemblyTest() {
-		std::cout << "Ctor was called" << std::endl;
-		foo = 3;
-	}
-	int foo;
+	virtual void SetUp() {}
+
+	Disassembler d;
 };
 
-TEST(DisassemblyTest, CountDigits) {
-	EXPECT_EQ(1, CountDigits(0x1));
-	EXPECT_EQ(3, CountDigits(0x321));
-	EXPECT_EQ(8, CountDigits(0x3200000f));
-	EXPECT_EQ(0, CountDigits(0));
+// TEST_F(DisassemblyTest, CountDigits) {
+	
+// 	EXPECT_EQ(1, d.CountDigits(0x1));
+// 	EXPECT_EQ(3, d.CountDigits(0x321));
+// 	EXPECT_EQ(8, d.CountDigits(0x3200000f));
+// 	EXPECT_EQ(0, d.CountDigits(0));
+// }
+
+TEST_F(DisassemblyTest, Decode) {
+
+	d.Decode(0x1);
+	EXPECT_EQ(d.GetOpcode(), 0x1);
+	EXPECT_EQ(d.GetOperand(), 0x0);
+
+	d.Decode(0);
+	EXPECT_EQ(d.GetOpcode(),	0x1);
+	EXPECT_EQ(d.GetOperand(),	0x0);
+
+	d.Decode(0x321);
+	EXPECT_EQ(d.GetOpcode(), 0x32);
+	EXPECT_EQ(d.GetOperand(), 0x1);
+
+	d.Decode(0x320103);
+	EXPECT_EQ(d.GetOpcode(), 0x32);
+	EXPECT_EQ(d.GetOperand(), 0x103);
+
+	d.Decode(0x3200000f);
+	EXPECT_EQ(d.GetOpcode(), 0x32);
+	EXPECT_EQ(d.GetOperand(), 0xf);
+
+	d.Decode(0x32ffffff);
+	EXPECT_EQ(d.GetOpcode(), 0x32);
+	EXPECT_EQ(d.GetOperand(), 0xffffff);
 }
 
-TEST(DisassemblyTest, Decode) {
-	unsigned int opcode = 0;
-	unsigned int operand = 0;
+TEST_F(DisassemblyTest, MapOpCodeToInstruction) {
+	d.Decode(0x1);
+	EXPECT_EQ("hlt", d.GetInstruction());
 
-	Decode(0x1, opcode, operand);
-	EXPECT_EQ(opcode, 0x1);
-	EXPECT_EQ(operand, 0x0);
-
-	Decode(0, opcode, operand);
-	EXPECT_EQ(opcode, 0x1);
-	EXPECT_EQ(operand, 0);
-
-	Decode(0x321, opcode, operand);
-	EXPECT_EQ(0x32, opcode);
-	EXPECT_EQ(1, operand);
-
-	Decode(0x320103, opcode, operand);
-	EXPECT_EQ(0x32, opcode);
-	EXPECT_EQ(0x103, operand);
-
-	Decode(0x3200000f, opcode, operand);
-	EXPECT_EQ(0x32, opcode);
-	EXPECT_EQ(0xf, operand);
-
-	Decode(0x32ffffff, opcode, operand);
-	EXPECT_EQ(0x32, opcode);
-	EXPECT_EQ(0xffffff, operand);
-}
-
-TEST(DisassemblyTest, MapOpCodeToInstruction) {
-	std::string op = "hlt";
-	unsigned int opcode = 0;
-	unsigned int operand = 0;
-	Decode(0x1, opcode, operand);
-	EXPECT_EQ(op, MapOpCodeToInstruction(opcode));
-
-	EXPECT_EQ("dup", MapOpCodeToInstruction(0x26));
+	d.Decode(0x26);
+	EXPECT_EQ("dup", d.GetInstruction());
 
 }
 // TEST(DisassemblyTest, CheckInput) {

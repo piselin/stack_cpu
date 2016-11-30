@@ -105,22 +105,21 @@ int main()
     if (command == "disassemble") {
        
         // 2. read number of instructions
-		int n = 0;
+		unsigned int n = 0;
 		std::cin >> n;
 
 		std::cin >> std::hex; // set input to hex mode
+		Disassembler d;
 
 		unsigned int hex = 0;
 		for (unsigned int i = 0; i < n; i++) {
 			std::cin >> hex;
-			unsigned int opcode = 0;
-			unsigned int operand = 0;
-
-			Decode(hex, opcode, operand);
+			
+			d.Decode(hex);
 
 			// fixme pi: output should only print operand for "opcode c";
-			std::cout 	<< MapOpCodeToInstruction(opcode) << " " 
-						<< std::dec << operand 
+			std::cout 	<< d.GetInstruction() << " " 
+						<< std::dec << d.GetOperand() 
 						<< std::endl;
 		}
 
