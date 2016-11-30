@@ -11,8 +11,10 @@ project(${PROJECT_NAME})
 add_definitions(-Wall -std=c++14)
 
 # Normal Executables
-add_executable(virtual_cpu stack_processor.cpp)
 add_library(disassembly_lib disassembly.cpp)
+add_executable(virtual_cpu stack_processor.cpp)
+target_link_libraries(virtual_cpu disassembly_lib)
+
 
 
 
