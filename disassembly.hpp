@@ -11,7 +11,7 @@
 
 // largest number possible:
 // 0xffffffff = 4294967295
-				
+
 
 // instruction format
 using in_t = unsigned int;
@@ -24,7 +24,7 @@ public:
 	Disassembler() : 
 		_hex_input(0), _opcode(0), _operand(0), _n_digits(0) {}
 
-	void Decode(in_t hex);
+	void Decode(const in_t hex);
 
 	// fixme: i would prefere this to be private!
 	// but then I would have to blackbox test...

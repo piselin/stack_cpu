@@ -19,7 +19,7 @@ disassemble
 0x12000000
 0x3200000a
 0x13000000
-0x01000000
+0x1000000
 */
 
 
@@ -41,43 +41,58 @@ unsigned int Disassembler::CountDigits() {
 	return n;
 }
 
-void Disassembler::Decode(in_t input) {
+void Disassembler::Decode(const in_t input) {
 	_hex_input = input; // keep the original input
 
 	in_t hex = input; // working copy
 
 	_n_digits = CountDigits();
 	_operand = 0x0;
-	_opcode = 0x0; // halt
+	_opcode = 0x0;
 
-	// std::cout << "we are about to set opcode to " << hex << std::endl;
-	// std::cout << _n_digits << std::endl;
-
-	if (_n_digits == 0) {
-		
-	} else if(_n_digits == 1) {
-		if(hex == 0x1) {
-			_opcode = hex; // we have the exit code
-		} else {
-			assert(false); // some crap happened!
-		}
-	} else if(_n_digits == 2) {
-		_opcode = hex;		// we have a straight up opcode
-	} else {
-		
-		for(unsigned int i = 0; i < _n_digits-2; i++) {
-			unsigned int digit = hex%16;
-			_operand += digit*std::pow(16,i);
-			hex/=16;
-		}
-
-		// 0x [1][0000000] (operand 7 digits) means 0x1 with 0
-		// 0x [10][000000] (opreand 6 digits) means 0x10 with 0
-		if(_operand == 0 && _n_digits == 7)
-			_opcode = 0x1;
-		else
-			_opcode = hex;
+ 	for(unsigned int i = 0; i < _n_digits-2; i++) {
+		unsigned int digit = hex%16;
+		_operand += digit*std::pow(16,i);
+		hex/=16;
 	}
+
+	// 0x [1][0000000] (operand 7 digits) means 0x1 with 0
+	// 0x [10][000000] (opreand 6 digits) means 0x10 with 0
+	if(_operand == 0 && _n_digits == 7)
+		_opcode = 0x1;
+	else
+		_opcode = hex;
+
+
+	// fixme pi: this functionality just clutters the code..
+	// it deals with input like 0x32 instead of 0x32000000
+
+
+	// if (_n_digits == 0) {
+		
+	// } else if(_n_digits == 1) {
+	// 	if(hex == 0x1) {
+	// 		_opcode = hex; // we have the exit code
+	// 	} else {
+	// 		assert(false); // some crap happened!
+	// 	}
+	// } else if(_n_digits == 2) {
+	// 	_opcode = hex;		// we have a straight up opcode
+	// } else {
+		
+	// 	for(unsigned int i = 0; i < _n_digits-2; i++) {
+	// 		unsigned int digit = hex%16;
+	// 		_operand += digit*std::pow(16,i);
+	// 		hex/=16;
+	// 	}
+
+	// 	// 0x [1][0000000] (operand 7 digits) means 0x1 with 0
+	// 	// 0x [10][000000] (opreand 6 digits) means 0x10 with 0
+	// 	if(_operand == 0 && _n_digits == 7)
+	// 		_opcode = 0x1;
+	// 	else
+	// 		_opcode = hex;
+	// }
 }
 
 
@@ -105,6 +120,7 @@ std::string Disassembler::GetInstruction() const {
 		case 0x42:	op = "jne #";	break;
 		case 0x43:	op = "jls #";	break;
 		case 0x44:	op = "jle #";	break;
+		default: 	assert(false); 	break;
 	}
 	return op;
 }
