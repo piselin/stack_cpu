@@ -60,10 +60,13 @@ TEST_F(DisassemblyTest, Decode) {
 }
 
 TEST_F(DisassemblyTest, MapOpCodeToInstruction) {
-	d.Decode(0x1);
+	d.Decode(0x1000000);
 	EXPECT_EQ("hlt", d.GetInstruction());
+	
+	d.Decode(0x10000000);
+	EXPECT_EQ("in", d.GetInstruction());
 
-	d.Decode(0x26);
+	d.Decode(0x26000000);
 	EXPECT_EQ("dup", d.GetInstruction());
 
 }
