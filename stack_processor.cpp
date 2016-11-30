@@ -1,6 +1,8 @@
 #include <iostream>
 #include <algorithm>
 #include <string>
+#include <stack>
+#include <vector>
 
 #include "disassembly.hpp"
 
@@ -17,87 +19,9 @@ The program simulates a system consisting of
 - ouput
 The simulated system will execute the machine instructions
 (by applying their effect)
-
-
 */
 
-// using instruction_in_t = unsigned int;
-
-// class Instruction {
-// public:
-// 	Instruction(const instruction_in_t in) 
-// 	: _in(in) 
-// 	{
-// 		//1. check the input
-// 		check();
-// 		//2. take it appart into opcode & operand
-// 		split();
-// 	}
-
-// 	/**
-// 	Print human readable information
-// 	*/
-// 	void print(std::ostream& os) const {
-// 		os << "---------------\n";
-// 		os << "Instruction " << _in << "\n";
-// 		os << "OpCode " << _opcode << "\n";
-// 		os << "Operand " << _operand << "\n";
-// 		os << "---------------";
-// 		os << "\n";
-// 	}
-// private:
-// 	inline bool split();
-// 	inline bool check();
-
-// private:
-// 	instruction_in_t _in;
-// 	int _opcode;
-// 	int _operand;
-// };
-
-// // wrapper to print an Instruction in an easy way
-// std::ostream& operator<<(std::ostream& os, const Instruction& in) {
-// 	in.print(os);
-// 	return os;
-// }
-
-// bool Instruction::check() {
-// 	return true;
-// }
-
-// bool Instruction::split() {
-
-// 	std::cout << "splitting " << _in << std::endl;
-
-
-
-// 	return true;
-// }
-
-// // test this with gtest
-// std::string dec_to_hex(unsigned int dec) {
-// 	const std::string hex_base = "0123456789abcdef";
-// 	std::string hex;
-// 	while(dec > 0) {
-// 		unsigned int r = dec % 16;
-// 		hex += hex_base[r];
-// 		dec /= 16;
-// 	}
-// 	std::reverse(hex.begin(), hex.end());
-// 	return hex;
-// }
-
-// unsigned int get_op_code(std::string hex) {
-// 	unsigned int opcode = 0;
-		
-// 	// doesn't work...
-// 	// opcode += std::stoi(hex[0])*16;
-// 	// opcode += std::stoi(hex[1]);
-// 	return opcode;
-// }
-
-int main()
-{
+int main() {
     std::string command;
     std::cin >> command;
 
@@ -126,9 +50,179 @@ int main()
 		std::cout << "end" << std::endl;
         
     } else if (command == "simulate") {
-        
-        // TODO: perform simulation task b)
-        
+
+
+		// 1. Set up Initial State
+    	
+		
+    	unsigned int n = 0;
+		std::cin >> n;
+
+		unsigned int hex = 0;
+		std::vector<unsigned int> memory(0,0);
+		for(size_t i = 0; i < n; i++) {
+			std::cin >> std::hex >> hex;
+			memory.push_back(hex);
+		}
+
+		std::stack<int> stack;
+		unsigned int pc = 0;
+		Disassembler d;
+
+		std::string op = "";
+    
+   		while(op != "hlt") {
+   			// Fetch
+   			unsigned int instruction = memory[pc];
+
+   			// Decode
+   			d.Decode(instruction);
+   			op = d.GetInstruction();
+
+   			// Execute Instruction
+   			unsigned int opcode = d.GetOpcode();
+
+   			unsigned int c, l, v, r, m = 0;
+
+   			switch(opcode) {
+				case 0x1: 	/*noting*/	 	break;
+				case 0x10:	{
+					std::cin >> std::dec >> v;
+					stack.push(v);
+					pc++;
+					break;
+				}
+				case 0x11: 	{
+					char k;
+					std::cin >> k;
+					stack.push(k);
+					pc++;
+					break;
+				}
+				case 0x12:	{
+					v = stack.top(); stack.pop();
+					std::cout << std::dec << v;
+					pc++;
+					break;
+				}
+				case 0x13: 	{
+					char k;
+					k = stack.top(); stack.pop();
+					std::cout << k;
+					pc++;
+					break;
+				}
+				case 0x20:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					stack.push(l+r);
+					pc++;
+					break;
+				}
+				case 0x21:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					stack.push(l-r);
+					pc++;
+					break;
+				}
+				case 0x22:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					stack.push(l*r);
+					pc++;
+					break;
+				}
+				case 0x23:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					stack.push(l/r);
+					pc++;
+					break;
+				}
+				case 0x24: 	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					stack.push(l%r);
+					pc++;
+					break;
+				}
+				case 0x25:	{
+					r = stack.top(); stack.pop();
+					stack.push(-r);
+					pc++;
+					break;
+				}
+				case 0x32: 	{
+					c = d.GetOperand();
+					stack.push(c);
+					pc++;
+					break;
+				}
+				case 0x26:	{
+					r = stack.top(); stack.pop();
+					stack.push(r); stack.push(r);
+					pc++;
+					break;
+				}
+				case 0x30:	{
+					m = stack.top(); stack.pop();
+					r = memory[m];
+					stack.push(r);
+					pc++;
+					break;
+				}
+				case 0x31:	{
+					m = stack.top(); stack.pop();
+					v = stack.top(); stack.pop();
+					memory[m] = v;
+					pc++;
+					break;
+				}
+				case 0x40:	{
+					c = d.GetOperand();
+					pc = c;
+					break;
+				}
+				case 0x41:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					if(l == r)
+						pc = d.GetOperand();
+					else
+						pc++;
+					break;
+				}
+				case 0x42:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					if(l != r)
+						pc = d.GetOperand();
+					else
+						pc++;
+					break;
+				}
+				case 0x43:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					if(l < r)
+						pc = d.GetOperand();
+					else
+						pc++;
+					break;
+				}
+				case 0x44:	{
+					r = stack.top(); stack.pop();
+					l = stack.top(); stack.pop();
+					if(l <= r)
+						pc = d.GetOperand();
+					else
+						pc++;
+					break;
+				}
+				default: assert(false); break;
+			}
+   		}
     } else {
         std::cerr << "unkown command\n";
     }
