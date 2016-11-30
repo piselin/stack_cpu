@@ -6,10 +6,12 @@
 #include <cassert>
 #include <cmath>
 #include <string>
+#include <ostream>
 
 
 // largest number possible:
 // 0xffffffff = 4294967295
+				
 
 // instruction format
 using in_t = unsigned int;
@@ -40,6 +42,8 @@ public:
 		std::cout << "_operand " << _operand << std::endl;
 		std::cout << std::dec << "_n_digits " << _n_digits << std::endl;
 	}
+
+	std::string PrintInstruction() const;
 
 private:
 

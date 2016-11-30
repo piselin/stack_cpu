@@ -19,21 +19,36 @@ protected:
 
 TEST_F(DisassemblyTest, Decode) {
 
-	d.Decode(0x1);
-	EXPECT_EQ(d.GetOpcode(), 0x1);
-	EXPECT_EQ(d.GetOperand(), 0x0);
+	// d.Decode(0);
+	// EXPECT_EQ(d.GetOpcode(),	0x1);
+	// EXPECT_EQ(d.GetOperand(),	0x0);
 
-	d.Decode(0);
+	// d.Decode(0x1);
+	// EXPECT_EQ(d.GetOpcode(), 	0x1);
+	// EXPECT_EQ(d.GetOperand(), 	0x0);
+
+	// [10][000000] means opcode 0x10
+	d.Decode(0x10000000);
+	EXPECT_EQ(d.GetOpcode(),	0x10);
+	EXPECT_EQ(d.GetOperand(),	0x0);
+
+	// // [1][000] means opcode 0x1
+	// d.Decode(0x1000);
+	// EXPECT_EQ(d.GetOpcode(),	0x1);
+	// EXPECT_EQ(d.GetOperand(),	0x0);
+
+	// [1][0000000] means opcode 0x1
+	d.Decode(0x1000000);
 	EXPECT_EQ(d.GetOpcode(),	0x1);
 	EXPECT_EQ(d.GetOperand(),	0x0);
 
-	d.Decode(0x321);
-	EXPECT_EQ(d.GetOpcode(), 0x32);
-	EXPECT_EQ(d.GetOperand(), 0x1);
+	// d.Decode(0x321);
+	// EXPECT_EQ(d.GetOpcode(), 0x32);
+	// EXPECT_EQ(d.GetOperand(), 0x1);
 
-	d.Decode(0x320103);
-	EXPECT_EQ(d.GetOpcode(), 0x32);
-	EXPECT_EQ(d.GetOperand(), 0x103);
+	// d.Decode(0x320103);
+	// EXPECT_EQ(d.GetOpcode(), 0x32);
+	// EXPECT_EQ(d.GetOperand(), 0x103);
 
 	d.Decode(0x3200000f);
 	EXPECT_EQ(d.GetOpcode(), 0x32);
