@@ -23,76 +23,45 @@ disassemble
 */
 
 
-unsigned int Disassembler::CountDigits() {
+// unsigned int Disassembler::CountDigits() {
 
-	//unsigned int _n_digits = 0;
-	unsigned int n = 0;
-	in_t h = _hex_input; // working copy
+// 	//unsigned int _n_digits = 0;
+// 	unsigned int n = 0;
+// 	instruction_t h = _hex_input; // working copy
 
-	//const unsigned int kMaxNumberOfDigits = 10; // fixme pi: is this 8 or 10?
+// 	//const unsigned int kMaxNumberOfDigits = 10; // fixme pi: is this 8 or 10?
 
-	for(unsigned int i = 0; (i < 8) && (h > 0); i++){
-		//_n_digits++;
-		n++;
-		h/=16;
-	}
-	//std::cout << "after calc : " << std::dec << _n_digits << std::endl;
-	//assert(n == 8);
-	return n;
-}
+// 	for(unsigned int i = 0; (i < 8) && (h > 0); i++){
+// 		//_n_digits++;
+// 		n++;
+// 		h/=16;
+// 	}
+// 	return n;
+// }
 
-void Disassembler::Decode(const in_t input) {
-	_hex_input = input; // keep the original input
+void Disassembler::Decode(const instruction_t input) {
+	// this assumes we have perfect input
+	// note that 16777216 = 0x1000000
 
-	in_t hex = input; // working copy
+	// division by 0x1000000 (7 digits in total)
+	// cuts off the last 6 digits, leaves the first 2
+	_opcode = input / 16777216;
 
-	_n_digits = CountDigits();
-	_operand = 0x0;
-	_opcode = 0x0;
+	// modulo with 0x1000000 (7 digits in total)
+	// cuts off the first 2 digits, leaves the last 6
+	_operand = input % 16777216;
 
- 	for(unsigned int i = 0; i < _n_digits-2; i++) {
-		unsigned int digit = hex%16;
-		_operand += digit*std::pow(16,i);
-		hex/=16;
-	}
+	// two's complement:
+	// if highest bit is set we have a negative number. 
+	// we can thus compare _operand to the largest possible
+	// positive number:
+	// largest positive number with n bits is
+	// 2^(n-1) - 1
+	// for 24 bits this gives 8388607
 
-	// 0x [1][0000000] (operand 7 digits) means 0x1 with 0
-	// 0x [10][000000] (opreand 6 digits) means 0x10 with 0
-	if(_operand == 0 && _n_digits == 7)
-		_opcode = 0x1;
-	else
-		_opcode = hex;
+	if(_operand > 8388607)
+		_operand -= 16777216;
 
-
-	// fixme pi: this functionality just clutters the code..
-	// it deals with input like 0x32 instead of 0x32000000
-
-
-	// if (_n_digits == 0) {
-		
-	// } else if(_n_digits == 1) {
-	// 	if(hex == 0x1) {
-	// 		_opcode = hex; // we have the exit code
-	// 	} else {
-	// 		assert(false); // some crap happened!
-	// 	}
-	// } else if(_n_digits == 2) {
-	// 	_opcode = hex;		// we have a straight up opcode
-	// } else {
-		
-	// 	for(unsigned int i = 0; i < _n_digits-2; i++) {
-	// 		unsigned int digit = hex%16;
-	// 		_operand += digit*std::pow(16,i);
-	// 		hex/=16;
-	// 	}
-
-	// 	// 0x [1][0000000] (operand 7 digits) means 0x1 with 0
-	// 	// 0x [10][000000] (opreand 6 digits) means 0x10 with 0
-	// 	if(_operand == 0 && _n_digits == 7)
-	// 		_opcode = 0x1;
-	// 	else
-	// 		_opcode = hex;
-	// }
 }
 
 

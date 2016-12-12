@@ -56,7 +56,7 @@ TEST_F(DisassemblyTest, Decode) {
 
 	d.Decode(0x32ffffff);
 	EXPECT_EQ(d.GetOpcode(), 0x32);
-	EXPECT_EQ(d.GetOperand(), 0xffffff);
+	EXPECT_EQ(d.GetOperand(), -1);
 }
 
 TEST_F(DisassemblyTest, MapOpCodeToInstruction) {

@@ -14,44 +14,28 @@
 
 
 // instruction format
-using in_t = unsigned int;
-const unsigned int kInputLimit = 0xffffffff;
-
+using instruction_t = unsigned int;
 
 class Disassembler {
 public:
 
 	Disassembler() : 
-		_hex_input(0), _opcode(0), _operand(0), _n_digits(0) {}
+		_opcode(0), _operand(0), _n_digits(0) {}
 
-	void Decode(const in_t hex);
-
-	// fixme: i would prefere this to be private!
-	// but then I would have to blackbox test...
+	void Decode(const instruction_t hex);
 	
 	std::string GetInstruction() const;
-	// bool CheckInput(const unsigned int input);
 
-	inline in_t GetOpcode() const { return _opcode; }
-	inline in_t GetOperand() const { return _operand; }
-
-	void print() const{
-		std::cout << std::hex;
-		std::cout << "_hex_input " << _hex_input << std::endl;
-		std::cout << "_opcode " << _opcode << std::endl;
-		std::cout << "_operand " << _operand << std::endl;
-		std::cout << std::dec << "_n_digits " << _n_digits << std::endl;
-	}
+	inline instruction_t GetOpcode() const { return _opcode; }
+	inline int GetOperand() const { return _operand; }
 
 	std::string PrintInstruction() const;
 
 private:
 
-	unsigned int CountDigits();
-
-	in_t _hex_input;
-	in_t _opcode;
-	in_t _operand;
+	//unsigned int CountDigits();
+	instruction_t _opcode;
+	int _operand;	// can be a negative number
 	unsigned int _n_digits;
 };
 
