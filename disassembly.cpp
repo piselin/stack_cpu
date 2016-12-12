@@ -11,34 +11,7 @@ a stream of instructions
 
 Disassembly: the reverse (stream of instructions to
 human readable format)
-
-
-input: 
-disassemble
-5
-0x3200000f
-0x12000000
-0x3200000a
-0x13000000
-0x1000000
 */
-
-
-// unsigned int Disassembler::CountDigits() {
-
-// 	//unsigned int _n_digits = 0;
-// 	unsigned int n = 0;
-// 	instruction_t h = _hex_input; // working copy
-
-// 	//const unsigned int kMaxNumberOfDigits = 10; // fixme pi: is this 8 or 10?
-
-// 	for(unsigned int i = 0; (i < 8) && (h > 0); i++){
-// 		//_n_digits++;
-// 		n++;
-// 		h/=16;
-// 	}
-// 	return n;
-// }
 
 void Disassembler::Decode(const instruction_t input) {
 	// this assumes we have perfect input
@@ -64,7 +37,6 @@ void Disassembler::Decode(const instruction_t input) {
 		_operand -= 16777216;
 
 }
-
 
 std::string Disassembler::GetInstruction() const {
 	std::string op;

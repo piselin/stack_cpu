@@ -12,7 +12,6 @@
 // largest number possible:
 // 0xffffffff = 4294967295
 
-
 // instruction format
 using instruction_t = unsigned int;
 
@@ -20,7 +19,7 @@ class Disassembler {
 public:
 
 	Disassembler() : 
-		_opcode(0), _operand(0), _n_digits(0) {}
+		_opcode(0), _operand(0) {}
 
 	void Decode(const instruction_t hex);
 	
@@ -32,7 +31,6 @@ private:
 
 	instruction_t _opcode;
 	int _operand;	// can be a negative number
-	unsigned int _n_digits;
 };
 
 #endif /* DISASSEMBLY_LIB */
