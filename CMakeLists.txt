@@ -8,12 +8,14 @@ project(${PROJECT_NAME})
 #option(test "Build all tests." OFF) # Makes boolean 'test' available.
 
 # Compiler
-add_definitions(-Wall -std=c++14)
+add_definitions(-Wall -std=c++14 -pedantic)
 
 # Normal Executables
 add_library(disassembly_lib disassembly.cpp)
+#add_library(simulation_lib simulation.cpp)
 add_executable(virtual_cpu stack_processor.cpp)
 target_link_libraries(virtual_cpu disassembly_lib)
+#target_link_libraries(virtual_cpu simulation_lib)
 
 
 
