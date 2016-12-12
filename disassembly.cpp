@@ -57,7 +57,7 @@ void Disassembler::Decode(const instruction_t input) {
 	// positive number:
 	// largest positive number with n bits is
 	// 2^(n-1) - 1
-	// for 24 bits this gives 8388607
+	// for 24 bits this gives 8388607 = 0x7fffff
 
 	if(_operand > 8388607)
 		_operand -= 16777216;
@@ -89,7 +89,9 @@ std::string Disassembler::GetInstruction() const {
 		case 0x42:	op = "jne #";	break;
 		case 0x43:	op = "jls #";	break;
 		case 0x44:	op = "jle #";	break;
-		default: 	assert(false); 	break;
+		default:	op = "data 0x#"; break; // fixme pi: this is a problem! we don't change the output format to hex!
+		// default: 	std::cout << "opcode does not exist: (" << _opcode << ")"<< std::endl;
+		// 			assert(false); 	break;
 	}
 	return op;
 }
