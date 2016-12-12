@@ -3,6 +3,7 @@
 
 #include <stack>
 #include <vector>
+#include <cassert>
 #include "disassembly.hpp"
 
 class Processor {

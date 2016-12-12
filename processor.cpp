@@ -166,6 +166,7 @@ void Processor::Execute(const unsigned int opcode) {
 				_pc++;
 			break;
 		}
-		default: assert(false); break;
+		default:	std::cout << "unknown instruction [" << opcode << "]" << std::endl;
+					assert(false); break;
 	}
 }

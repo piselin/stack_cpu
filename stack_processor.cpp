@@ -1,7 +1,4 @@
 #include <iostream>
-#include <algorithm>
-#include <string>
-
 #include "disassembly.hpp"
 #include "processor.hpp"
 
@@ -60,4 +57,5 @@ int main() {
     } else {
         std::cerr << "unkown command\n";
     }
+    return 0;
 }

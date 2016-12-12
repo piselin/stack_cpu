@@ -2,11 +2,9 @@
 #define DISASSEMBLY_LIB
 
 #include <iostream>
-#include <vector>
-#include <cassert>
-#include <cmath>
+#include <sstream>
 #include <string>
-#include <ostream>
+
 
 
 // largest number possible:
