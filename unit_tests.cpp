@@ -57,6 +57,24 @@ TEST_F(DisassemblyTest, Decode) {
 	d.Decode(0x32ffffff);
 	EXPECT_EQ(d.GetOpcode(), 0x32);
 	EXPECT_EQ(d.GetOperand(), -1);
+
+	d.Decode(0x327fffff);
+	EXPECT_EQ(d.GetOpcode(), 0x32);
+	EXPECT_EQ(d.GetOperand(), 8388607);
+
+	// 8388608, so we have 0x800000 - 2^24 = -8388608
+	d.Decode(0x32800000);
+	EXPECT_EQ(d.GetOpcode(), 0x32);
+	EXPECT_EQ(d.GetOperand(), -8388608);
+
+	d.Decode(0x32400000);
+	EXPECT_EQ(d.GetOpcode(), 0x32);
+	EXPECT_EQ(d.GetOperand(), 4194304);
+
+	d.Decode(0x12000000);
+	EXPECT_EQ(d.GetOpcode(), 0x12);
+	EXPECT_EQ(d.GetOperand(), 0);
+	
 }
 
 TEST_F(DisassemblyTest, MapOpCodeToInstruction) {
@@ -68,6 +86,12 @@ TEST_F(DisassemblyTest, MapOpCodeToInstruction) {
 
 	d.Decode(0x26000000);
 	EXPECT_EQ("dup", d.GetInstruction());
+
+	d.Decode(0x40000001);
+	EXPECT_EQ("jmp 1", d.GetInstruction());
+
+	d.Decode(0xa);
+	EXPECT_EQ("data 0xa", d.GetInstruction());
 
 }
 // TEST(DisassemblyTest, CheckInput) {

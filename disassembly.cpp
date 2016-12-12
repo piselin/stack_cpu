@@ -1,4 +1,5 @@
 #include "disassembly.hpp"
+#include <sstream>
 
 /*
 Disassembly: 
@@ -80,31 +81,18 @@ std::string Disassembler::GetInstruction() const {
 		case 0x23:	op = "div";		break;
 		case 0x24: 	op = "mod";		break;
 		case 0x25:	op = "neg";		break;
-		case 0x32: 	op = "const #";	break;
+		case 0x32: 	op = "const " + std::to_string(_operand); break;
 		case 0x26:	op = "dup";		break;
 		case 0x30:	op = "load";	break;
 		case 0x31:	op = "store";	break;
-		case 0x40:	op = "jmp #";	break;
-		case 0x41:	op = "jeq #";	break;
-		case 0x42:	op = "jne #";	break;
-		case 0x43:	op = "jls #";	break;
-		case 0x44:	op = "jle #";	break;
-		default:	op = "data 0x#"; break; // fixme pi: this is a problem! we don't change the output format to hex!
-		// default: 	std::cout << "opcode does not exist: (" << _opcode << ")"<< std::endl;
-		// 			assert(false); 	break;
+		case 0x40:	op = "jmp " + std::to_string(_operand); break;
+		case 0x41:	op = "jeq " + std::to_string(_operand);	break;
+		case 0x42:	op = "jne " + std::to_string(_operand);	break;
+		case 0x43:	op = "jls " + std::to_string(_operand);	break;
+		case 0x44:	op = "jle " + std::to_string(_operand);	break;
+		default:	std::stringstream ss;
+					ss << "data 0x" << std::hex << _operand; // output operand as hex number
+					op = ss.str();
 	}
 	return op;
-}
-
-std::string Disassembler::PrintInstruction() const {
-	std::string instruction = GetInstruction();
-
-	std::string::size_type pos = instruction.find("#");
-	if(pos != std::string::npos) {
-		
-		instruction.pop_back();
-		instruction+= std::to_string(_operand);
-	}
-
-	return instruction;
 }

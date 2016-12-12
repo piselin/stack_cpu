@@ -45,7 +45,7 @@ int main() {
 			d.Decode(hex);
 
 			// output again
-			std::cout << d.PrintInstruction() << std::endl;
+			std::cout << d.GetInstruction() << std::endl;
 		}
 		std::cout << "end" << std::endl;
         
@@ -182,6 +182,7 @@ int main() {
 				case 0x40:	{
 					c = d.GetOperand();
 					pc = c;
+					//std::cout <<" foo " << pc << std::endl;
 					break;
 				}
 				case 0x41:	{

@@ -28,12 +28,8 @@ public:
 
 	inline instruction_t GetOpcode() const { return _opcode; }
 	inline int GetOperand() const { return _operand; }
-
-	std::string PrintInstruction() const;
-
 private:
 
-	//unsigned int CountDigits();
 	instruction_t _opcode;
 	int _operand;	// can be a negative number
 	unsigned int _n_digits;
